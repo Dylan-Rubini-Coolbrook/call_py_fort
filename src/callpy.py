@@ -67,6 +67,7 @@ def set_state_char(*args):
     STATE[tag] = chr
     return 0
 
+
 @ffi.def_extern(error=1)
 def get_state_char(tag_ptr, value_ptr, size_ptr):
     tag = ffi.string(tag_ptr).decode("UTF-8")
@@ -78,13 +79,14 @@ def get_state_char(tag_ptr, value_ptr, size_ptr):
     destination_buffer[: len(value_encoded)] = value_encoded
     return 0
 
+
 @ffi.def_extern(error=1)
 def get_state_py(tag, dtype, t, n):
     tag = ffi.string(tag).decode("UTF-8")
     dtype = ffi.string(dtype).decode("UTF-8")
     arr = asarray(ffi, t, (n[0],), dtype)
 
-    src = STATE.get(tag, np.zeros(n[0]))
+    src = STATE.get(tag)
     arr[:] = src.ravel()
     return 0
 
