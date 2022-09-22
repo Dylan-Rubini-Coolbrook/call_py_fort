@@ -25,10 +25,10 @@ ctype2dtype["float"] = np.dtype("f4")
 ctype2dtype["double"] = np.dtype("f8")
 
 
-def asarray(ffi, ptr, shape, **kwargs):
+def asarray(ffi, ptr, shape, dtype, **kwargs):
     length = np.prod(shape)
     # Get the canonical C type of the elements of ptr as a string.
-    T = ffi.getctype(ffi.typeof(ptr).item)
+    T = dtype
     # print( T )
     # print( ffi.sizeof( T ) )
 
@@ -42,12 +42,13 @@ def asarray(ffi, ptr, shape, **kwargs):
 
 
 @ffi.def_extern(error=1)
-def set_state_py(tag, t, nx, ny, nz):
+def set_state_py(tag, dtype, t, nx, ny, nz):
     shape = (nz[0], ny[0], nx[0])
     shape = [n for n in shape if n != -1]
 
     tag = ffi.string(tag).decode("UTF-8")
-    arr = asarray(ffi, t, shape).copy()
+    dtype = ffi.string(dtype).decode("UTF-8")    
+    arr = asarray(ffi, t, shape, dtype)
     STATE[tag] = arr
     return 0
 
@@ -78,9 +79,10 @@ def get_state_char(tag_ptr, value_ptr, size_ptr):
     return 0
 
 @ffi.def_extern(error=1)
-def get_state_py(tag, t, n):
+def get_state_py(tag, dtype, t, n):
     tag = ffi.string(tag).decode("UTF-8")
-    arr = asarray(ffi, t, (n[0],))
+    dtype = ffi.string(dtype).decode("UTF-8")
+    arr = asarray(ffi, t, (n[0],), dtype)
 
     src = STATE.get(tag, np.zeros(n[0]))
     arr[:] = src.ravel()
