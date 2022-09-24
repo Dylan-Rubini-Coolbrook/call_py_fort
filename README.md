@@ -20,7 +20,7 @@ enter a developer environment with all these dependencies installed run:
 Once the dependencies are installed, you can compile this library using
 
     mkdir build
-    cd build 
+    cd build
     cmake ..
     make
 
@@ -76,10 +76,10 @@ roughly translate to
 You should be able to compile the above by running
 
     gfortran -I/usr/local/include -Wl,-rpath=/usr/local/lib -L/usr/local/lib main.f90 -lcallpy
-    
+
 Here's what happens when you run the compiled binary:
 ```
-$ ./a.out 
+$ ./a.out
 {'a': array([1., 1., 1., 1., 1., 1., 1., 1., 1., 1.])}
 ```
 
@@ -141,4 +141,3 @@ import sys
 sys.argv = []
 import tensorflow
 ```
-

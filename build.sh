@@ -4,11 +4,11 @@ module purge
 # set-up/source spack environment variables
 unset LD_LIBRARY_PATH
 # set-up/source spack environment variables
-source /datapart1/spack/share/spack/setup-env.sh 
+source /datapart1/spack/share/spack/setup-env.sh
 spack clean
 spack unload --all
 
-# load modules from spack 
+# load modules from spack
 module load gcc-11.2.0-gcc-7.3.0-67ocnsa
 
 conda activate ct-build

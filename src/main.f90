@@ -1,4 +1,4 @@
-!> 
+!>
 !! Copyright 2016 ARC Centre of Excellence for Climate Systems Science
 !!
 !! \author  Scott Wales <scott.wales@unimelb.edu.au>
@@ -16,6 +16,6 @@
 !! limitations under the License.
 
 PROGRAM call_py_fort
-    USE call_py_fort_mod
+   USE call_py_fort_mod
 
 END PROGRAM

@@ -3,7 +3,7 @@ module test_call_py_fort
     use callpy_mod
 
 contains
-    
+
     @test
     subroutine test_bar()
         @assertTrue(.true.)

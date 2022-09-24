@@ -1,6 +1,7 @@
 # file plugin_build.py
-import sys
 import os
+import sys
+
 import cffi
 
 ffibuilder = cffi.FFI()

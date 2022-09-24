@@ -1,8 +1,9 @@
-from my_plugin import ffi
 import importlib
-import numpy as np
 import logging
 import sys
+
+import numpy as np
+from my_plugin import ffi
 
 logging.basicConfig(level=logging.INFO)
 
@@ -15,8 +16,8 @@ ctype2dtype = {}
 # Integer types
 for prefix in ("int", "uint"):
     for log_bytes in range(4):
-        ctype = "%s%d_t" % (prefix, 8 * (2 ** log_bytes))
-        dtype = "%s%d" % (prefix[0], 2 ** log_bytes)
+        ctype = "%s%d_t" % (prefix, 8 * (2**log_bytes))
+        dtype = "%s%d" % (prefix[0], 2**log_bytes)
         # print( ctype )
         # print( dtype )
         ctype2dtype[ctype] = np.dtype(dtype)
@@ -36,9 +37,8 @@ def asarray(ffi, ptr, shape, dtype, **kwargs):
     if T not in ctype2dtype:
         raise RuntimeError("Cannot create an array for element type: %s" % T)
 
-    a = np.frombuffer(ffi.buffer(ptr, length * ffi.sizeof(T)), ctype2dtype[T]).reshape(
-        shape, **kwargs
-    )
+    a = np.frombuffer(ffi.buffer(ptr, length * ffi.sizeof(T)),
+                      ctype2dtype[T]).reshape(shape, **kwargs)
     return a
 
 
@@ -48,7 +48,7 @@ def set_state_py(tag, dtype, t, nx, ny, nz):
     shape = [n for n in shape if n != -1]
 
     tag = ffi.string(tag).decode("UTF-8")
-    dtype = ffi.string(dtype).decode("UTF-8")    
+    dtype = ffi.string(dtype).decode("UTF-8")
     arr = asarray(ffi, t, shape, dtype)
     STATE[tag] = arr
     return 0
@@ -90,7 +90,7 @@ def get_state_char(tag_ptr, value_ptr, size_ptr):
     assert isinstance(value, str)
     value_encoded = value.encode("UTF-8")
     destination_buffer = ffi.buffer(value_ptr, size)
-    destination_buffer[: len(value_encoded)] = value_encoded
+    destination_buffer[:len(value_encoded)] = value_encoded
     return 0
 
 
@@ -98,8 +98,9 @@ def get_state_char(tag_ptr, value_ptr, size_ptr):
 def get_state_scalar_integer(tag, t):
     tag = ffi.string(tag).decode("UTF-8")
     ttype = "int32_t"
-    destination_buffer = np.frombuffer(ffi.buffer(t, ffi.sizeof(ttype)), ctype2dtype[ttype])
-    destination_buffer[:] = STATE[tag]    
+    destination_buffer = np.frombuffer(ffi.buffer(t, ffi.sizeof(ttype)),
+                                       ctype2dtype[ttype])
+    destination_buffer[:] = STATE[tag]
     return 0
 
 
@@ -107,8 +108,9 @@ def get_state_scalar_integer(tag, t):
 def get_state_scalar_real(tag, t):
     tag = ffi.string(tag).decode("UTF-8")
     ttype = "float"
-    destination_buffer = np.frombuffer(ffi.buffer(t, ffi.sizeof(ttype)), ctype2dtype[ttype])
-    destination_buffer[:] = STATE[tag] 
+    destination_buffer = np.frombuffer(ffi.buffer(t, ffi.sizeof(ttype)),
+                                       ctype2dtype[ttype])
+    destination_buffer[:] = STATE[tag]
     return 0
 
 
@@ -116,16 +118,17 @@ def get_state_scalar_real(tag, t):
 def get_state_scalar_real8(tag, t):
     tag = ffi.string(tag).decode("UTF-8")
     ttype = "double"
-    destination_buffer = np.frombuffer(ffi.buffer(t, ffi.sizeof(ttype)), ctype2dtype[ttype])
-    destination_buffer[:] = STATE[tag] 
-    return 0        
+    destination_buffer = np.frombuffer(ffi.buffer(t, ffi.sizeof(ttype)),
+                                       ctype2dtype[ttype])
+    destination_buffer[:] = STATE[tag]
+    return 0
 
 
 @ffi.def_extern(error=1)
 def get_state_py(tag, dtype, t, n):
     tag = ffi.string(tag).decode("UTF-8")
     dtype = ffi.string(dtype).decode("UTF-8")
-    arr = asarray(ffi, t, (n[0],), dtype)
+    arr = asarray(ffi, t, (n[0], ), dtype)
 
     src = STATE.get(tag)
     arr[:] = src.ravel()

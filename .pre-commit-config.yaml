@@ -1,0 +1,64 @@
+repos:
+# -   repo: https://github.com/psf/black
+#     rev: stable
+#     hooks:
+#     - id: black
+#       language_version: python3.7
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.2.0
+    hooks:
+    - id: trailing-whitespace
+    - id: end-of-file-fixer
+    - id: check-yaml
+    - id: requirements-txt-fixer
+    - id: fix-encoding-pragma
+      args: ['--remove']
+    - id: mixed-line-ending
+      args: ['--fix=lf']
+      description: Forces to replace line ending by the UNIX 'lf' character.
+    # - id: pretty-format-json
+    #   args: ['--no-sort-keys']
+    - id: check-added-large-files
+      args: ['--maxkb=500']
+    - id: no-commit-to-branch
+      args: [--branch, staging]
+
+-   repo: https://github.com/pycqa/isort
+    rev: 5.10.1
+    hooks:
+    - id: isort
+      name: isort (python)
+
+-   repo: https://github.com/pre-commit/mirrors-yapf
+    rev: v0.32.0
+    hooks:
+    -   id: yapf
+        name: yapf
+        language: python
+        additional_dependencies: [toml]
+        entry: yapf
+        args: [-i, -vv]
+        types: [python]
+
+-   repo: https://gitlab.com/pycqa/flake8
+    rev: 3.7.9
+    hooks:
+    - id: flake8
+      args: [--exit-zero]
+      verbose: true
+      additional_dependencies: [pep8-naming]
+
+- repo: https://gitlab.com/bmares/check-json5
+  rev: v1.0.0
+  hooks:
+  - id: check-json5
+
+- repo: https://github.com/pseewald/fprettify
+  rev: v0.3.7
+  hooks:
+  - id: fprettify
+    name: auto-formatter for modern fortran source code
+    description: imposes strict whitespace formatting for modern (F90+) Fortran code
+    entry: fprettify
+    language: python
+    files: \.[fF]\d*$

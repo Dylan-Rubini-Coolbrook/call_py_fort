@@ -4,6 +4,7 @@ import numpy as np
 
 global_test = 0.0
 
+
 def function(STATE):
     global global_test
     a = STATE.get("a")
@@ -11,7 +12,6 @@ def function(STATE):
     c = STATE.get("c")
 
     print(global_test)
-    global_test = 10.0      
+    global_test = 10.0
 
-
-    STATE["c"] = 2.0 * a  + 3.0 * b
+    STATE["c"] = 2.0 * a + 3.0 * b
