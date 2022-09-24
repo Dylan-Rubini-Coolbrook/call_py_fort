@@ -34,6 +34,9 @@ module callpy_mod
      module procedure set_state_integer_1d
      module procedure set_state_integer_2d      
      module procedure set_state_char
+     module procedure set_state_scalar_real
+     module procedure set_state_scalar_real8
+     module procedure set_state_scalar_integer        
   end interface
 
   interface get_state        
@@ -46,10 +49,12 @@ module callpy_mod
     module procedure get_state_integer_1d
     module procedure get_state_integer_2d      
     module procedure get_state_char
+    module procedure get_state_scalar_real
+    module procedure get_state_scalar_real8
+    module procedure get_state_scalar_integer       
   end interface
 
-  public :: set_state, call_function, get_state, set_state_scalar
-
+  public :: set_state, get_state, call_function
 
 contains
 
@@ -210,25 +215,65 @@ contains
 
   end subroutine set_state_float_3d
 
-  subroutine set_state_scalar(tag, t)
+  subroutine set_state_scalar_real(tag, t)
     character(len=*) :: tag
     real :: t
-    real(c_double) :: t_
+    real(c_float) :: t_
     character(len=256) :: tag_c
     interface
-       function set_state_scalar_py(tag, t) result(y)&
-            bind(c, name='set_state_scalar')
+       function set_state_scalar_real_py(tag, t) result(y)&
+            bind(c, name='set_state_scalar_real')
          use iso_c_binding
          character(c_char) :: tag
-         real(c_double) t
+         real(c_float) t
          integer(c_int) :: y
-       end function set_state_scalar_py
+       end function set_state_scalar_real_py
     end interface
 
     t_ = t
     tag_c = trim(tag)//char(0)
-    call check(set_state_scalar_py(tag_c, t_))
-  end subroutine set_state_scalar
+    call check(set_state_scalar_real_py(tag_c, t_))
+  end subroutine set_state_scalar_real
+
+  subroutine set_state_scalar_real8(tag, t)
+    character(len=*) :: tag
+    real(8) :: t
+    real(c_double) :: t_
+    character(len=256) :: tag_c
+    interface
+       function set_state_scalar_real8_py(tag, t) result(y)&
+            bind(c, name='set_state_scalar_real8')
+         use iso_c_binding
+         character(c_char) :: tag
+         real(c_double) t
+         integer(c_int) :: y
+       end function set_state_scalar_real8_py
+    end interface
+
+    t_ = t
+    tag_c = trim(tag)//char(0)
+    call check(set_state_scalar_real8_py(tag_c, t_))
+  end subroutine set_state_scalar_real8
+
+  subroutine set_state_scalar_integer(tag, t)
+    character(len=*) :: tag
+    integer(4) :: t
+    integer(c_int) :: t_
+    character(len=256) :: tag_c
+    interface
+       function set_state_scalar_interger_py(tag, t) result(y)&
+            bind(c, name='set_state_scalar_integer')
+         use iso_c_binding
+         character(c_char) :: tag
+         integer(c_int) t
+         integer(c_int) :: y
+       end function set_state_scalar_interger_py
+    end interface
+
+    t_ = t
+    tag_c = trim(tag)//char(0)
+    call check(set_state_scalar_interger_py(tag_c, t_))
+  end subroutine set_state_scalar_integer
 
   subroutine get_state_double_base(tag, t, n)
     character(kind=c_char,len=*) :: tag
@@ -328,6 +373,54 @@ contains
     n  = size(t)
     call get_state_integer_base(tag, t, n)
   end subroutine get_state_integer_2d
+
+  subroutine get_state_scalar_real(tag, dat)
+    interface
+       function get_state_scalar_real_py(tag, dat) result(y)&
+            bind(c, name='get_state_scalar_real')
+         use iso_c_binding
+         implicit none
+         character(c_char) :: tag
+         real(c_float) :: dat
+         integer(c_int) :: y
+       end function
+    end interface
+    character(len=*) :: tag
+    real(4) :: dat
+    call check(get_state_scalar_real_py(trim(tag) // char(0), dat))
+  end subroutine get_state_scalar_real
+
+  subroutine get_state_scalar_real8(tag, dat)
+    interface
+       function get_state_scalar_real8_py(tag, dat) result(y)&
+            bind(c, name='get_state_scalar_real8')
+         use iso_c_binding
+         implicit none
+         character(c_char) :: tag
+         real(c_double) :: dat
+         integer(c_int) :: y
+       end function
+    end interface
+    character(len=*) :: tag
+    real(8) :: dat
+    call check(get_state_scalar_real8_py(trim(tag) // char(0), dat))
+  end subroutine get_state_scalar_real8
+
+  subroutine get_state_scalar_integer(tag, dat)
+    interface
+       function get_state_scalar_integer_py(tag, dat) result(y)&
+            bind(c, name='get_state_scalar_integer')
+         use iso_c_binding
+         implicit none
+         character(c_char) :: tag
+         integer(c_int) :: dat
+         integer(c_int) :: y
+       end function
+    end interface
+    character(len=*) :: tag
+    integer(4) :: dat
+    call check(get_state_scalar_integer_py(trim(tag) // char(0), dat))
+  end subroutine get_state_scalar_integer
 
   subroutine set_state_char(tag, chr)
     interface

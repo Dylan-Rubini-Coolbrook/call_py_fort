@@ -22,6 +22,8 @@ call call_function(py_module, "function")
 
 call get_state("c", c)
 
+call call_function(py_module, "function")
+
 write(*, *) c(10000, 10000)
 
 end program example

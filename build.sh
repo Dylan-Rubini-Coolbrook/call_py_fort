@@ -17,7 +17,7 @@ export FC=gfortran
 export F90=gfortan
 export F77=gfortran
 
-rm -rf build
+sudo rm -rf build
 mkdir build
 cd build
 cmake .. -DCMAKE_Fortran_FLAGS="-O3"

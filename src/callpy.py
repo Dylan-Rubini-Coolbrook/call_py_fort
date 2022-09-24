@@ -2,6 +2,7 @@ from my_plugin import ffi
 import importlib
 import numpy as np
 import logging
+import sys
 
 logging.basicConfig(level=logging.INFO)
 
@@ -54,8 +55,21 @@ def set_state_py(tag, dtype, t, nx, ny, nz):
 
 
 @ffi.def_extern(error=1)
-def set_state_scalar(args):
-    tag, t = args
+def set_state_scalar_real(tag, t):
+    tag = ffi.string(tag).decode("UTF-8")
+    STATE[tag] = t[0]
+    return 0
+
+
+@ffi.def_extern(error=1)
+def set_state_scalar_real8(tag, t):
+    tag = ffi.string(tag).decode("UTF-8")
+    STATE[tag] = t[0]
+    return 0
+
+
+@ffi.def_extern(error=1)
+def set_state_scalar_integer(tag, t):
     tag = ffi.string(tag).decode("UTF-8")
     STATE[tag] = t[0]
     return 0
@@ -78,6 +92,33 @@ def get_state_char(tag_ptr, value_ptr, size_ptr):
     destination_buffer = ffi.buffer(value_ptr, size)
     destination_buffer[: len(value_encoded)] = value_encoded
     return 0
+
+
+@ffi.def_extern(error=1)
+def get_state_scalar_integer(tag, t):
+    tag = ffi.string(tag).decode("UTF-8")
+    ttype = "int32_t"
+    destination_buffer = np.frombuffer(ffi.buffer(t, ffi.sizeof(ttype)), ctype2dtype[ttype])
+    destination_buffer[:] = STATE[tag]    
+    return 0
+
+
+@ffi.def_extern(error=1)
+def get_state_scalar_real(tag, t):
+    tag = ffi.string(tag).decode("UTF-8")
+    ttype = "float"
+    destination_buffer = np.frombuffer(ffi.buffer(t, ffi.sizeof(ttype)), ctype2dtype[ttype])
+    destination_buffer[:] = STATE[tag] 
+    return 0
+
+
+@ffi.def_extern(error=1)
+def get_state_scalar_real8(tag, t):
+    tag = ffi.string(tag).decode("UTF-8")
+    ttype = "double"
+    destination_buffer = np.frombuffer(ffi.buffer(t, ffi.sizeof(ttype)), ctype2dtype[ttype])
+    destination_buffer[:] = STATE[tag] 
+    return 0        
 
 
 @ffi.def_extern(error=1)
