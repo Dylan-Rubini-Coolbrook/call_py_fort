@@ -15,3 +15,8 @@ def function(STATE):
     global_test = 10.0
 
     STATE["c"] = 2.0 * a + 3.0 * b
+
+    bo = STATE.get("bo")
+
+    print(bo)
+    STATE["bo"] = False

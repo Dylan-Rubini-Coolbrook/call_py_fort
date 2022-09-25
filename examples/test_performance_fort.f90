@@ -8,6 +8,8 @@ program example
    integer, parameter :: n = 10000
    character(len=*), parameter :: py_module = "multiply"
 
+   logical(1) :: bo
+
    allocate (a(n, n), b(n, n), c(n, n))
 
    a = 3.0
@@ -18,12 +20,18 @@ program example
    call set_state("b", b)
    call set_state("c", c)
 
+   bo = .True.
+
+   call set_state("bo", bo)
+
    call call_function(py_module, "function")
 
+   call get_state("bo", bo)
    call get_state("c", c)
 
    call call_function(py_module, "function")
 
    write (*, *) c(10000, 10000)
+   write (*, *) bo
 
 end program example

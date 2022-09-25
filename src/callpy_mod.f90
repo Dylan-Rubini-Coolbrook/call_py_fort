@@ -37,6 +37,7 @@ module callpy_mod
       module procedure set_state_scalar_real
       module procedure set_state_scalar_real8
       module procedure set_state_scalar_integer
+      module procedure set_state_bool
    end interface
 
    interface get_state
@@ -52,6 +53,7 @@ module callpy_mod
       module procedure get_state_scalar_real
       module procedure get_state_scalar_real8
       module procedure get_state_scalar_integer
+      module procedure get_state_bool
    end interface
 
    public :: set_state, get_state, call_function
@@ -215,6 +217,26 @@ contains
 
    end subroutine set_state_float_3d
 
+   subroutine set_state_bool(tag, t)
+      character(len=*) :: tag
+      logical(1) :: t
+      logical(c_bool) :: t_
+      character(len=256) :: tag_c
+      interface
+         function set_state_bool_py(tag, t) result(y) &
+            bind(c, name='set_state_bool')
+            use iso_c_binding
+            character(c_char) :: tag
+            logical(c_bool) t
+            integer(c_int) :: y
+         end function set_state_bool_py
+      end interface
+
+      t_ = t
+      tag_c = trim(tag)//char(0)
+      call check(set_state_bool_py(tag_c, t_))
+   end subroutine set_state_bool
+
    subroutine set_state_scalar_real(tag, t)
       character(len=*) :: tag
       real :: t
@@ -373,6 +395,22 @@ contains
       n = size(t)
       call get_state_integer_base(tag, t, n)
    end subroutine get_state_integer_2d
+
+   subroutine get_state_bool(tag, dat)
+      interface
+         function get_state_bool_py(tag, dat) result(y) &
+            bind(c, name='get_state_bool')
+            use iso_c_binding
+            implicit none
+            character(c_char) :: tag
+            logical(c_bool) :: dat
+            integer(c_int) :: y
+         end function
+      end interface
+      character(len=*) :: tag
+      logical(1) :: dat
+      call check(get_state_bool_py(trim(tag)//char(0), dat))
+   end subroutine get_state_bool
 
    subroutine get_state_scalar_real(tag, dat)
       interface

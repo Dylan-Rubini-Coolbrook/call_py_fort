@@ -11,6 +11,8 @@ extern int set_state_py(char *, char *, char *, int*, int*, int*);
 extern int get_state_py(char *, char *, char *, int*);
 extern int set_state_char(char *, char *);
 extern int get_state_char(char *, char *, int *);
+extern int set_state_bool(char *, _Bool *);
+extern int get_state_bool(char *, _Bool *);
 extern int get_state_scalar_real(char *, float *);
 extern int get_state_scalar_real8(char *, double *);
 extern int get_state_scalar_integer(char *, int *);

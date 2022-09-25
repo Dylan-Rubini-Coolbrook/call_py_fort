@@ -25,6 +25,7 @@ for prefix in ("int", "uint"):
 # Floating point types
 ctype2dtype["float"] = np.dtype("f4")
 ctype2dtype["double"] = np.dtype("f8")
+ctype2dtype["_Bool"] = np.dtype(np.bool_)
 
 
 def asarray(ffi, ptr, shape, dtype, **kwargs):
@@ -51,6 +52,13 @@ def set_state_py(tag, dtype, t, nx, ny, nz):
     dtype = ffi.string(dtype).decode("UTF-8")
     arr = asarray(ffi, t, shape, dtype)
     STATE[tag] = arr
+    return 0
+
+
+@ffi.def_extern(error=1)
+def set_state_bool(tag, t):
+    tag = ffi.string(tag).decode("UTF-8")
+    STATE[tag] = t[0]
     return 0
 
 
@@ -91,6 +99,16 @@ def get_state_char(tag_ptr, value_ptr, size_ptr):
     value_encoded = value.encode("UTF-8")
     destination_buffer = ffi.buffer(value_ptr, size)
     destination_buffer[:len(value_encoded)] = value_encoded
+    return 0
+
+
+@ffi.def_extern(error=1)
+def get_state_bool(tag, t):
+    tag = ffi.string(tag).decode("UTF-8")
+    ttype = "_Bool"
+    destination_buffer = np.frombuffer(ffi.buffer(t, ffi.sizeof(ttype)),
+                                       ctype2dtype[ttype])
+    destination_buffer[:] = STATE[tag]
     return 0
 
 
