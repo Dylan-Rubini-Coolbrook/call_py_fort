@@ -1,22 +1,34 @@
 # This code only runs once at the initialization you can e.g. load an ML model
 # from a file here
-import numpy as np
+from time import perf_counter
 
-global_test = 0.0
+import numpy as np
 
 
 def function(STATE):
-    global global_test
+
+    start_full = perf_counter()
+
     a = STATE.get("a")
     b = STATE.get("b")
     c = STATE.get("c")
+    d = STATE.get("d")
+    e = STATE.get("e")
 
-    print(global_test)
-    global_test = 10.0
-
+    start = perf_counter()
     STATE["c"] = 2.0 * a + 3.0 * b
+    stop = perf_counter()
+    print(f"Time scaler multiply = {stop - start} s")
 
-    bo = STATE.get("bo")
+    start = perf_counter()
+    STATE["d"] = a * b
+    stop = perf_counter()
+    print(f"Time dot product = {stop - start} s")
 
-    print(bo)
-    STATE["bo"] = False
+    start = perf_counter()
+    STATE["e"] = np.matmul(a, b)
+    stop = perf_counter()
+    print(f"Time matmul = {stop - start} s")
+
+    stop_full = perf_counter()
+    print(f"Time Wrap Func = {stop_full - start_full} s")

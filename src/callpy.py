@@ -38,9 +38,8 @@ def asarray(ffi, ptr, shape, dtype, **kwargs):
     if T not in ctype2dtype:
         raise RuntimeError("Cannot create an array for element type: %s" % T)
 
-    a = np.frombuffer(ffi.buffer(ptr, length * ffi.sizeof(T)),
-                      ctype2dtype[T]).reshape(shape, **kwargs)
-    return a
+    return np.frombuffer(ffi.buffer(ptr, length * ffi.sizeof(T)),
+                         ctype2dtype[T]).reshape(shape, **kwargs)
 
 
 @ffi.def_extern(error=1)
