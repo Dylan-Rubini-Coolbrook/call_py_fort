@@ -6,12 +6,12 @@ module callpy_mod
    private
 
    interface
-      function set_state_py(tag, dtype, t, nx, ny, nz) result(y) bind(c)
+      function set_state_py(tag, dtype, t, nx, ny, nz, nn) result(y) bind(c)
          use iso_c_binding
          character(kind=c_char, len=1), intent(in) :: tag(*)
          character(kind=c_char, len=1), intent(in) :: dtype(*)
          type(c_ptr), intent(in), value           :: t
-         integer(kind=c_int) :: nx, ny, nz
+         integer(kind=c_int) :: nx, ny, nz, nn
          integer(c_int) :: y
       end function set_state_py
 
@@ -29,6 +29,7 @@ module callpy_mod
       module procedure set_state_double_2d
       module procedure set_state_double_1d
       module procedure set_state_float_3d
+      module procedure set_state_float_4d
       module procedure set_state_float_2d
       module procedure set_state_float_1d
       module procedure set_state_integer_1d
@@ -152,18 +153,26 @@ contains
       character(kind=c_char, len=*) :: tag
       character(kind=c_char, len=*), parameter :: dtype = "int32_t"
 
-      call check(set_state_py(tag//C_NULL_CHAR, dtype//C_NULL_CHAR, c_loc(dat), nx, ny, nz))
+      call check(set_state_py(tag//C_NULL_CHAR, dtype//C_NULL_CHAR, c_loc(dat), nx, ny, nz, -1))
 
    end subroutine set_state_integer_base
 
-   subroutine set_state_float_base(tag, dat, nx, ny, nz)
+   subroutine set_state_float_base(tag, dat, nx, ny, nz, nn)
 
       integer, intent(in) :: nx, ny, nz
+      integer, intent(in), optional :: nn
       real(4), dimension(*), intent(in), target :: dat
       character(kind=c_char, len=*) :: tag
       character(kind=c_char, len=*), parameter :: dtype = "float"
+      integer :: a_nn
 
-      call check(set_state_py(tag//C_NULL_CHAR, dtype//C_NULL_CHAR, c_loc(dat), nx, ny, nz))
+      if (present(nn)) then
+         a_nn = nn
+      else
+         a_nn = -1
+      end if
+
+      call check(set_state_py(tag//C_NULL_CHAR, dtype//C_NULL_CHAR, c_loc(dat), nx, ny, nz, a_nn))
 
    end subroutine set_state_float_base
 
@@ -174,7 +183,7 @@ contains
       character(kind=c_char, len=*) :: tag
       character(kind=c_char, len=*), parameter :: dtype = "double"
 
-      call check(set_state_py(tag//C_NULL_CHAR, dtype//C_NULL_CHAR, c_loc(dat), nx, ny, nz))
+      call check(set_state_py(tag//C_NULL_CHAR, dtype//C_NULL_CHAR, c_loc(dat), nx, ny, nz, -1))
 
    end subroutine set_state_double_base
 
@@ -216,6 +225,20 @@ contains
       call set_state_float_base(tag, t, nx, ny, nz)
 
    end subroutine set_state_float_3d
+
+   subroutine set_state_float_4d(tag, t)
+      character(kind=c_char, len=*) :: tag
+      real(4), dimension(:, :, :, :), intent(in), target :: t
+      integer :: nx, ny, nz, nn
+
+      nx = size(t, 1)
+      ny = size(t, 2)
+      nz = size(t, 3)
+      nn = size(t, 4)
+
+      call set_state_float_base(tag, t, nx, ny, nz, nn)
+
+   end subroutine set_state_float_4d
 
    subroutine set_state_bool(tag, t)
       character(len=*) :: tag

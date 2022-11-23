@@ -43,8 +43,8 @@ def asarray(ffi, ptr, shape, dtype, **kwargs):
 
 
 @ffi.def_extern(error=1)
-def set_state_py(tag, dtype, t, nx, ny, nz):
-    shape = (nz[0], ny[0], nx[0])
+def set_state_py(tag, dtype, t, nx, ny, nz, nn):
+    shape = (nn[0], nz[0], ny[0], nx[0])
     shape = [n for n in shape if n != -1]
 
     tag = ffi.string(tag).decode("UTF-8")
