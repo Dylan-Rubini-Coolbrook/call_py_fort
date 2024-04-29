@@ -24,7 +24,7 @@ export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 sudo rm -rf build
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_FLAGS="-O3 -march=native -mtune=native"
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_FLAGS="-O3 -march=native -mtune=native -Wl,-rpath=/home/orie3565/micromamba/envs/ct-build-mm/lib/"
 make
 make test
 
