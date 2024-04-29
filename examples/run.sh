@@ -11,7 +11,8 @@ spack unload --all
 # load modules from spack
 module load gcc-11.2.0-gcc-7.3.0-67ocnsa
 
-conda activate ct-build
+micromamba deactivate
+micromamba activate ct-build-mm
 
 export PYTHONPATH=$(pwd):$PYTHONPATH
 
