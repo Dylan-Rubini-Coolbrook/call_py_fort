@@ -12,13 +12,13 @@ spack unload --all
 module load gcc-11.2.0-gcc-7.3.0-67ocnsa
 
 micromamba deactivate
-micromamba activate ct-build-mm
+micromamba activate tf-cpu-source2
 
 export PYTHONPATH=$(pwd):$PYTHONPATH
 
 # NOTE: installation location of callpy_mod.mod and callpy_mod.so is in
 # the directories /usr/local/include and /user/local/lib
-gfortran -O3 -march=native -mtune=native -I/usr/local/include  -Wl,-rpath=/home/orie3565/micromamba/envs/ct-build-mm/lib/ -Wl,-rpath=/usr/local/lib -L/usr/local/lib test_performance_fort.f90 -lcallpy
+gfortran -O3 -march=native -mtune=native -I/usr/local/include  -Wl,-rpath=/home/orie3565/micromamba/envs/tf-gpu/lib/ -Wl,-rpath=/usr/local/lib -L/usr/local/lib test_performance_fort.f90 -lcallpy
 
 time ./a.out
 
