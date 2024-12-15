@@ -24,7 +24,7 @@ repos:
       args: [--branch, staging]
 
 -   repo: https://github.com/pycqa/isort
-    rev: 5.10.1
+    rev: 5.12.0
     hooks:
     - id: isort
       name: isort (python)
@@ -40,13 +40,13 @@ repos:
         args: [-i, -vv]
         types: [python]
 
--   repo: https://gitlab.com/pycqa/flake8
-    rev: 3.7.9
-    hooks:
-    - id: flake8
-      args: [--exit-zero]
-      verbose: true
-      additional_dependencies: [pep8-naming]
+# -   repo: https://gitlab.com/pycqa/flake8
+#     rev: 3.7.9
+#     hooks:
+#     - id: flake8
+#       args: [--exit-zero]
+#       verbose: true
+#       additional_dependencies: [pep8-naming]
 
 - repo: https://gitlab.com/bmares/check-json5
   rev: v1.0.0
