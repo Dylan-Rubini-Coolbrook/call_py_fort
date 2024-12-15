@@ -22,13 +22,13 @@ pre-commit install
 
 if [ "$os_type" = "Darwin" ] && [ "$cpu_arch" = "arm64" ]; then
     echo "This is macOS."
-    FLAGS="armv9.2-a"
+    FLAGS="-march=armv9.2-a"
 
 elif [ "$os_type" = "Linux" ]; then
-	echo "This is Linux"
+    echo "This is Linux"
     FLAGS="-march=native -mtune=native"
 else
-	exit 1
+    exit 1
 fi
 
 sudo rm -rf build
